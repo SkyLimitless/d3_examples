@@ -76,7 +76,11 @@ path.lineTrajectory {
 
 <h1>Statistics of all players over period of time</h1>
 
-<i>Use your mouse to click and drag players (represented as circles) to explore 11 years of career stats</i></p>
+<i>Use your mouse to click and drag players (represented as circles) to explore 11 years of career stats</i>
+<i id="hint2" style="float:right">To cancel demo click on any player (represented as circle) or on slider</i><br>
+<i>Hover your mouse on player to see its progress</i>
+<i id="hint4" style="float:right">For comparing different players just double click on all players</i><br>
+<br>
 
 <!--need to change below code according to data-->
 <div id="chart" style="margin:0px"></div>
@@ -133,16 +137,16 @@ svg.append("text")
     .attr("text-anchor", "middle")
     .attr("x", width/2)
     .attr("y", height -6)
-    .text("Average winning total point difference");
+    .text("Average difference between winner's (represented as a circle)and his opponent's TOTAL for each year");
 // Add a y-axis label.
 svg.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "end")
     .attr("y", 6)
-    .attr("x", -200)
+    .attr("x", -50)
     .attr("dy", ".75em")
     .attr("transform", "rotate(-90)")
-    .text("Winning %");
+    .text("Percentage of matches player won for each year");
 // Add the year label; the value is set on transition.
 var label = svg.append("text")
     .attr("class", "year label")
@@ -157,6 +161,66 @@ var countrylabel = svg.append("text")
     .attr("y", 80)
     .attr("x", 20)
     .text(" ");
+
+var europe = svg.append("g").append("circle")
+                .attr("cx", width)
+                .attr("cy", 0)
+                .attr("r", 20)
+                .style("fill", colorScale("Europe"))
+                .append("title").text("Europe");
+
+  svg.append("text")
+    .style("font-size","20px")
+    .attr("text-anchor", "start")
+    .attr("y", 5)
+    .attr("x", width - 90)
+    .text("Europe");
+
+var asia = svg.append("g").append("circle")
+                .attr("cx", width)
+                .attr("cy", 84)
+                .attr("r", 20)
+                .style("fill", colorScale("Asia"))
+                .append("title").text("Asia");
+
+  svg.append("text")
+    .style("font-size","20px")
+    .attr("text-anchor", "start")
+    .attr("y", 89)
+    .attr("x", width - 90)
+    .text("Asia");
+
+
+var america = svg.append("g").append("circle")
+                .attr("cx", width)
+                .attr("cy", 42)
+                .attr("r", 20)
+                .style("fill", colorScale("America"))
+                .append("title").text("America");
+
+  svg.append("text")
+    .style("font-size","20px")
+    .attr("text-anchor", "start")
+    .attr("y", 47)
+    .attr("x", width - 90)
+    .text("America");
+
+
+var australia = svg.append("g").append("circle")
+                .attr("cx", width)
+                .attr("cy", 126)
+                .attr("r", 20)
+                .style("fill", colorScale("Australia"))
+                .append("title").text("Australia");
+
+  svg.append("text")
+    .style("font-size","20px")
+    .attr("text-anchor", "start")
+    .attr("y", 131)
+    .attr("x", width - 90)
+    .text("Australia");
+
+
 var first_time = true;
 // Load the data.
 d3.json("data_for_first_graph.json", function(nations) {
@@ -296,7 +360,8 @@ function clear_demo() {
     window.clearInterval(demo_interval);
     countrylabel.text("");
     dragit.trajectory.removeAll();
-    d3.selectAll(".dot").style("opacity", 1)
+    d3.selectAll(".dot").style("opacity", 1);
+    d3.select("#hint2").style("opacity", 0);
   }
 }
 function play_demo() {
