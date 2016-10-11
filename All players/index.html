@@ -80,9 +80,11 @@ path.lineTrajectory {
 
 <!--need to change below code according to data-->
 <div id="chart" style="margin:0px"></div>
-<span id="min-time">2003</span> 
+<div id="playSlider">
+<span id="min-time">2003</span>
 <input type="range" name="points" min="0" max="11" step="1" value="0" id="slider-time" style="width:1200px">
 <span id="max-time">2013</span>
+</div>
 <br>
 <!--<p>
 Original creation by <a href="http://www.gapminder.org/world/">Gapminder</a> using <a href="https://github.com/RandomEtc/mind-gapper-js">Tom Carden</a> JavaScript version.<br>
@@ -255,32 +257,48 @@ d3.json("data_for_first_graph.json", function(nations) {
   
   init();
   function update(v, duration) {
+    if(dragit.time.current >= 12) {
+      dragit.time.current = 1;
+    }
     dragit.time.current = v || dragit.time.current;
     displayYear(dragit.time.current)
     d3.select("#slider-time").property("value", dragit.time.current);
   }
   function init() {
     dragit.init(".gRoot");
-    dragit.time = {min:2002, max:2012, step:1, current:2002}
+    dragit.time = {min:2002, max:2014, step:1, current:2003}
     dragit.data = d3.range(nations.length).map(function() { return Array(); })
-    for(var yy = 2002; yy<2014; yy++) {
+    for(var yy = 0; yy<11; yy++) {
       interpolateData(yy).filter(function(d, i) { 
-        dragit.data[i][yy-dragit.time.min] = [xScale(x(d)), yScale(y(d))];
+        dragit.data[i][yy] = [xScale(x(d)), yScale(y(d))];
       })
     }
     dragit.evt.register("update", update);
     //d3.select("#slider-time").property("value", dragit.time.current);
+  dragit.playback.loop = true;
+  dragit.playback.speed =  1000;
+  dragit.utils.slider("#playSlider", true);
     d3.select("#slider-time")
       .on("mousemove", function() { 
         update(parseInt(this.value), 500);
+        //update_graph();
         clear_demo();
       })
+
     var end_effect = function() {
       countrylabel.text("");
       dot.style("opacity", 1)
     }
     dragit.evt.register("dragend", end_effect)
   }
+
+function update_graph() {
+        clear_demo();
+        for (var i = 2003; i < 2014; i) {
+            update(parseInt(i), 500);
+          }
+}
+
 function clear_demo() {
   if(first_time) {
      svg.transition().duration(0);
