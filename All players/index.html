@@ -46,11 +46,11 @@ text {
   fill: #777;
 }
 .year.label {
-  font: 500 196px "Helvetica Neue";
+  font: 300 126px "Helvetica Neue";
   fill: #ddd;
 }
 .country.label  {
-  font: 500 96px "Helvetica Neue";
+  font: 100 60px "Helvetica Neue";
   fill: #ddd;
 }
 .year.label.active {
@@ -91,19 +91,20 @@ Re-Recreation using <a href="http://romsson.github.io/dragit/">dragit.js</a> by 
 -->
 <script>
 // Various accessors that specify the four dimensions of data to visualize.
-function x(d) { return d.income; }
-function y(d) { return d.lifeExpectancy; }
-function radius(d) { return d.population; }
+function x(d) { return d.average; }
+function y(d) { return d.percent; }
+function radius(d) { return d.total; }
 function color(d) { return d.region; }
 function key(d) { return d.name; }
+
 // Chart dimensions.
 var margin = {top: 19.5, right: 19.5, bottom: 19.5, left: 39.5},
     width = 1300 - margin.right,
     height = 500 - margin.top - margin.bottom;
 // Various scales. These domains make assumptions of data, naturally.
-var xScale = d3.scale.log().domain([300, 1e5]).range([0, width]), //total points difference goes here
-    yScale = d3.scale.linear().domain([0, 100]).range([height, 0]),
-    radiusScale = d3.scale.sqrt().domain([0, 5e8]).range([0, 40]),
+var xScale = d3.scale.linear().domain([0, 50]).range([0, width]), //total points difference goes here
+    yScale = d3.scale.linear().domain([-10, 100]).range([height, 25]),
+    radiusScale = d3.scale.sqrt().domain([0, 7]).range([0, 40]),
     colorScale = d3.scale.category10();
 
 // The x & y axes.
@@ -147,7 +148,7 @@ var label = svg.append("text")
     .attr("text-anchor", "end")
     .attr("y", height - 24)
     .attr("x", width)
-    .text(1800);
+    .text(2003);
 // Add the country label; the value is set on transition.
 var countrylabel = svg.append("text")
     .attr("class", "country label")
@@ -157,7 +158,7 @@ var countrylabel = svg.append("text")
     .text(" ");
 var first_time = true;
 // Load the data.
-d3.json("nations.json", function(nations) {
+d3.json("data_for_first_graph.json", function(nations) {
   // A bisector since many nation's data is sparsely-defined.
   var bisect = d3.bisector(function(d) { return d[0]; });
   // Add a dot per nation. Initialize the data at 1800, and set the colors.
@@ -200,7 +201,7 @@ d3.json("nations.json", function(nations) {
       .call(dragit.object.activate)
   // Add a title.
   dot.append("title")
-      .text(function(d) { return d.name; });
+      .text(function(d) { return d.name + "\n" + d.xcountry; });
   // Start a transition that interpolates the data based on year.
   svg.transition()
       .duration(30000)
@@ -225,12 +226,20 @@ d3.json("nations.json", function(nations) {
     return nations.map(function(d) {
       return {
         name: d.name,
+        xcountry: d.xcountry,
         region: d.region,
-        income: interpolateValues(d.income, year),
-        population: interpolateValues(d.population, year),
-        lifeExpectancy: interpolateValues(d.lifeExpectancy, year)
+        average: max(interpolateValues(d.average, year), 0),
+        total: max(interpolateValues(d.total, year), 0),
+        percent: max(interpolateValues(d.percent, year),0)
       };
     });
+  }
+
+  function max(d1, d2) {
+    if (d1 > d2) {
+      return d1;
+    }
+    return d2;
   }
   // Finds (and possibly interpolates) the value for the specified year.
   function interpolateValues(values, year) {
@@ -283,7 +292,8 @@ function clear_demo() {
   }
 }
 function play_demo() {
-  var ex_nations = ["China", "India", "Indonesia", "Italy", "France", "Spain", "Germany", "United States"]
+  //var ex_nations = ["Andy Murray",  "Tomas Berdych",  "Novak Djokovic", "Rafael Nadal", "Richard Gasquet",  "Ivo Karlovic", "David Ferrer", "Roger Federer"]
+  var ex_nations = ["Andy Murray",  "Tomas Berdych",  "Novak Djokovic", "Rafael Nadal", "Richard Gasquet", "David Ferrer", "Roger Federer", "Philipp Kohlschreiber", "Stanislas Wawrinka", "Mardy Fish"]
   var index_random_nation = null;
   var random_index = Math.floor(Math.random() * ex_nations.length);
   var random_nation = nations.filter(function(d, i) { 
