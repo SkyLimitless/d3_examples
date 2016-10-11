@@ -447,7 +447,6 @@ dragit.object.activate = function(d, i) {
     if(!dragit.playback.playing) {
       dragit.playback.playing = true;
       d3.select(vars.playback.el).select("button").text("| |").attr("class", "playing")
-
       if(dragit.time.current==dragit.time.max)
         dragit.time.current;
 
@@ -505,6 +504,27 @@ dragit.object.activate = function(d, i) {
     dragit.evt.register("drag", function() {
       d3.select(".slider-time").property("value", dragit.time.current);
     });
+  }
+
+    // Create and add a DOM HTML slider for time navigation
+  dragit.utils.slider1 = function(el, play_button) {
+    vars.playback.el = el;
+    d3.select(el).append("p")
+                 .style("clear", "both");
+
+    if(play_button) {
+      d3.select(el).append("button")
+                   .style({"height": "25px", "width": "25px"})
+                   .text("▶")
+                   .attr("class", "stop")
+                   .on("click", function() {
+                      if(dragit.playback.playing == false) {
+                        dragit.playback.start();
+                      } else {
+                        dragit.playback.stop();
+                      }
+                   });
+    }
 
   }
 
