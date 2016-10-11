@@ -220,6 +220,12 @@ var australia = svg.append("g").append("circle")
     .attr("x", width - 90)
     .text("Australia");
 
+  svg.append("text")
+    .style("font-size","15px")
+    .attr("text-anchor", "start")
+    .attr("y", 173)
+    .attr("x", width - 200)
+    .text("Circle Size - Total Matches Played");
 
 var first_time = true;
 // Load the data.
@@ -266,7 +272,7 @@ d3.json("data_for_first_graph.json", function(nations) {
       .call(dragit.object.activate)
   // Add a title.
   dot.append("title")
-      .text(function(d) { return d.name + "\n" + d.xcountry; });
+      .text(function(d) { return d.name + ", " + d.xcountry + "\nMatches played: " + d.total; });
   // Start a transition that interpolates the data based on year.
   svg.transition()
       .duration(30000)
