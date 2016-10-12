@@ -74,13 +74,44 @@ path.lineTrajectory {
 }
 </style>
 
-<h1>Statistics of all players over period of time</h1>
+<h1 align="center">Statistics of all players who played for more than 9 years</h1>
 
-<i>Use your mouse to click and drag players (represented as circles) to explore 11 years of career stats</i>
-<i id="hint2" style="float:right">To cancel demo click on any player (represented as circle) or on slider</i><br>
-<i>Hover your mouse on player to see its progress</i>
-<i id="hint4" style="float:right">For comparing different players just double click on all players</i><br>
-<br>
+<i id="hint2" >To cancel demo click on any player (represented as circle), continents or on slider</i><br>
+<b>Operations - </b><br>
+<table>
+    <tr>
+        <td>
+            <i><b>CLICK And DRAG</b></i>
+        </td>
+        <td>
+            <i> players (represented as circles) to explore 11 years of career stats</i>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <i><b>HOVER</b></i>
+        </td>
+        <td>
+            </i> your mouse on player to see its progress</i>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b><i>SINGLE CLICK ON PLAYERS</i></b>
+        </td>
+        <td>
+            <i>For individual, comparing different players performance and for toggle effect</i>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b><i>SINGLE CLICK ON CONTINENTS &nbsp; &nbsp;</i></b>
+        </td>
+        <td>
+            <i>For comparing different players performance of same continent</i>
+        </td>
+    </tr>
+</table>
 
 <!--need to change below code according to data-->
 <div id="chart" style="margin:0px"></div>
@@ -89,6 +120,9 @@ path.lineTrajectory {
 <input type="range" name="points" min="1" max="11" step="1" value="1" id="slider-time" style="width:1200px">
 <span id="max-time">2013</span>
 <br>
+<p>
+    References - http://romsson.github.io/dragit/ by Rommson
+</p>
 <!--<p>
 Original creation by <a href="http://www.gapminder.org/world/">Gapminder</a> using <a href="https://github.com/RandomEtc/mind-gapper-js">Tom Carden</a> JavaScript version.<br>
 Recreation by <a href="http://bost.ocks.org/mike/nations/">Mike Bostock</a> with <a href="http://d3js.org/">D3.js</a>.<br>
@@ -99,18 +133,20 @@ Re-Recreation using <a href="http://romsson.github.io/dragit/">dragit.js</a> by 
 function x(d) { return d.average; }
 function y(d) { return d.percent; }
 function radius(d) { return d.total; }
-function color(d) { return d.region; }
+function color(d) { return d.name; }
 function key(d) { return d.name; }
+function region(d) { return "dot " + d.region;}
 
 // Chart dimensions.
-var margin = {top: 19.5, right: 19.5, bottom: 19.5, left: 39.5},
-    width = 1300 - margin.right,
+var margin = {top: 19.5, right: 19.5, bottom: 49.5, left: 44.5},
+    width = 1300 - margin.right -margin.left,
     height = 500 - margin.top - margin.bottom;
 // Various scales. These domains make assumptions of data, naturally.
 var xScale = d3.scale.linear().domain([0, 50]).range([0, width]), //total points difference goes here
     yScale = d3.scale.linear().domain([-10, 100]).range([height, 25]),
     radiusScale = d3.scale.sqrt().domain([0, 7]).range([0, 40]),
-    colorScale = d3.scale.category10();
+    colorScale = d3.scale.category20b();
+    colorScale1 = d3.scale.category10();
 
 // The x & y axes.
 var xAxis = d3.svg.axis().orient("bottom").scale(xScale).ticks(12),
@@ -136,13 +172,13 @@ svg.append("text")
     .attr("class", "x label")
     .attr("text-anchor", "middle")
     .attr("x", width/2)
-    .attr("y", height -6)
+    .attr("y", height +35)
     .text("Average difference between winner's (represented as a circle)and his opponent's TOTAL for each year");
 // Add a y-axis label.
 svg.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "end")
-    .attr("y", 6)
+    .attr("y", -45)
     .attr("x", -50)
     .attr("dy", ".75em")
     .attr("transform", "rotate(-90)")
@@ -162,74 +198,226 @@ var countrylabel = svg.append("text")
     .attr("x", 20)
     .text(" ");
 
-var europe = svg.append("g").append("circle")
-                .attr("cx", width)
-                .attr("cy", 0)
-                .attr("r", 20)
-                .style("fill", colorScale("Europe"))
-                .append("title").text("Europe");
+svg.append("text")
+        .style("font-size", "20px")
+        .attr("text-anchor", "start")
+        .attr("y", 5)
+        .attr("x", width - 100)
+        .text("Europe");
 
-  svg.append("text")
-    .style("font-size","20px")
-    .attr("text-anchor", "start")
-    .attr("y", 5)
-    .attr("x", width - 90)
-    .text("Europe");
-
-var asia = svg.append("g").append("circle")
-                .attr("cx", width)
-                .attr("cy", 84)
-                .attr("r", 20)
-                .style("fill", colorScale("Asia"))
-                .append("title").text("Asia");
 
   svg.append("text")
     .style("font-size","20px")
     .attr("text-anchor", "start")
     .attr("y", 89)
-    .attr("x", width - 90)
+    .attr("x", width - 100)
     .text("Asia");
 
-
-var america = svg.append("g").append("circle")
-                .attr("cx", width)
-                .attr("cy", 42)
-                .attr("r", 20)
-                .style("fill", colorScale("America"))
-                .append("title").text("America");
 
   svg.append("text")
     .style("font-size","20px")
     .attr("text-anchor", "start")
     .attr("y", 47)
-    .attr("x", width - 90)
+    .attr("x", width - 100)
     .text("America");
 
 
-var australia = svg.append("g").append("circle")
-                .attr("cx", width)
-                .attr("cy", 126)
-                .attr("r", 20)
-                .style("fill", colorScale("Australia"))
-                .append("title").text("Australia");
 
   svg.append("text")
     .style("font-size","20px")
     .attr("text-anchor", "start")
     .attr("y", 131)
-    .attr("x", width - 90)
+    .attr("x", width - 100)
     .text("Australia");
 
   svg.append("text")
     .style("font-size","15px")
     .attr("text-anchor", "start")
     .attr("y", 173)
-    .attr("x", width - 200)
+    .attr("x", width - 220)
     .text("Circle Size - Total Matches Played");
 
+svg.append("text")
+        .style("font-size","15px")
+        .attr("text-anchor", "start")
+        .attr("y", 193)
+        .attr("x", width - 220)
+        .text("Trajectory - player's performance");
+
+
 var first_time = true;
+var dot_select = false;
+var continent_select = false;
 // Load the data.
 d3.json("data_for_first_graph.json", function(nations) {
+
+        svg.append("g").append("circle")
+                .attr("cx", width)
+                .attr("cy", 0)
+                .attr("r", 20)
+                .on("mousedown", function () {
+                })
+                .on("mouseup", function () {
+                    if (!continent_select) {
+                        continent_select = true;
+                        d3.selectAll(".selected").classed("selected", false);
+                        d3.selectAll(".Europe").classed("selected", true);
+                        dot.style("opacity", .2)
+                        d3.selectAll(".selected").style("opacity", 1)
+                    } else {
+                        continent_select = false;
+                        dragit.trajectory.removeAll("selected");
+                    }
+                    //TODO: test if has been dragged
+                    // Look at the state machine history and find a drag event in it?
+                })
+                .on("mouseenter", function () {
+                    if (dragit.statemachine.current_state == "idle") {
+                        clear_demo();
+                        countrylabel.text("Europe");
+                        dot.style("opacity", .2)
+                        d3.selectAll(".Europe").style("opacity", 1)
+                    }
+                })
+                .on("mouseleave", function () {
+                    if (dragit.statemachine.current_state == "idle") {
+                        countrylabel.text("");
+                        dot.style("opacity", 1);
+                    }
+                    if (continent_select) {
+                        dot.style("opacity", .2)
+                        d3.selectAll(".selected").style("opacity", 1)
+                    }
+                })
+                .style("fill", colorScale1("Europe"))
+                .append("title").text("Europe");
+
+    svg.append("g").append("circle")
+            .attr("cx", width)
+            .attr("cy", 84)
+            .attr("r", 20)
+            .on("mousedown", function () {
+            })
+            .on("mouseup", function () {
+                if (!continent_select) {
+                    continent_select = true;
+                    d3.selectAll(".selected").classed("selected", false);
+                    d3.selectAll(".Asia").classed("selected", true);
+                    dot.style("opacity", .2)
+                    d3.selectAll(".selected").style("opacity", 1)
+                } else {
+                    continent_select = false;
+                    dragit.trajectory.removeAll("selected");
+                }
+                //TODO: test if has been dragged
+                // Look at the state machine history and find a drag event in it?
+            })
+            .on("mouseenter", function () {
+                if (dragit.statemachine.current_state == "idle") {
+                    clear_demo();
+                    countrylabel.text("Asia");
+                    dot.style("opacity", .2)
+                    d3.selectAll(".Asia").style("opacity", 1)
+                }
+            })
+            .on("mouseleave", function () {
+                if (dragit.statemachine.current_state == "idle") {
+                    countrylabel.text("");
+                    dot.style("opacity", 1);
+                }
+                if (continent_select) {
+                    dot.style("opacity", .2)
+                    d3.selectAll(".selected").style("opacity", 1)
+                }
+            })
+            .style("fill", colorScale1("Asia"))
+            .append("title").text("Asia");
+
+    svg.append("g").append("circle")
+            .attr("cx", width)
+            .attr("cy", 42)
+            .attr("r", 20)
+            .on("mousedown", function () {
+            })
+            .on("mouseup", function () {
+                if (!continent_select) {
+                    continent_select = true;
+                    d3.selectAll(".selected").classed("selected", false);
+                    d3.selectAll(".America").classed("selected", true);
+                    dot.style("opacity", .2)
+                    d3.selectAll(".selected").style("opacity", 1)
+                } else {
+                    continent_select = false;
+                    dragit.trajectory.removeAll("selected");
+                }
+                //TODO: test if has been dragged
+                // Look at the state machine history and find a drag event in it?
+            })
+            .on("mouseenter", function () {
+                if (dragit.statemachine.current_state == "idle") {
+                    clear_demo();
+                    countrylabel.text("America");
+                    dot.style("opacity", .2)
+                    d3.selectAll(".America").style("opacity", 1)
+                }
+            })
+            .on("mouseleave", function () {
+                if (dragit.statemachine.current_state == "idle") {
+                    countrylabel.text("");
+                    dot.style("opacity", 1);
+                }
+                if (continent_select) {
+                    dot.style("opacity", .2)
+                    d3.selectAll(".selected").style("opacity", 1)
+                }
+            })
+            .style("fill", colorScale1("America"))
+            .append("title").text("America");
+
+    svg.append("g").append("circle")
+            .attr("cx", width)
+            .attr("cy", 126)
+            .attr("r", 20)
+            .on("mousedown", function () {
+            })
+            .on("mouseup", function () {
+                if (!continent_select) {
+                    continent_select = true;
+                    d3.selectAll(".selected").classed("selected", false);
+                    d3.selectAll(".Australia").classed("selected", true);
+                    dot.style("opacity", .2)
+                    d3.selectAll(".selected").style("opacity", 1)
+                } else {
+                    continent_select = false;
+                    dragit.trajectory.removeAll("selected");
+                }
+                //TODO: test if has been dragged
+                // Look at the state machine history and find a drag event in it?
+            })
+            .on("mouseenter", function () {
+                if (dragit.statemachine.current_state == "idle") {
+                    clear_demo();
+                    countrylabel.text("Australia");
+                    dot.style("opacity", .2)
+                    d3.selectAll(".Australia").style("opacity", 1)
+                }
+            })
+            .on("mouseleave", function () {
+                if (dragit.statemachine.current_state == "idle") {
+                    countrylabel.text("");
+                    dot.style("opacity", 1);
+                }
+                if (continent_select) {
+                    dot.style("opacity", .2)
+                    d3.selectAll(".selected").style("opacity", 1)
+                }
+            })
+            .style("fill", colorScale1("Australia"))
+            .append("title").text("Australia");
+
+
+
+
   // A bisector since many nation's data is sparsely-defined.
   var bisect = d3.bisector(function(d) { return d[0]; });
   // Add a dot per nation. Initialize the data at 1800, and set the colors.
@@ -238,15 +426,25 @@ d3.json("data_for_first_graph.json", function(nations) {
     .selectAll(".dot")
       .data(interpolateData(2003))
     .enter().append("circle")
-      .attr("class", "dot")
+      .attr("class", function(d) { return region(d); })
       .style("fill", function(d) { return colorScale(color(d)); })
       .call(position)
       .on("mousedow", function(d, i) {
       })
       .on("mouseup", function(d, i) {
-        dot.classed("selected", false);
+        if(!d3.select(this).classed("selected")) {
         d3.select(this).classed("selected", !d3.select(this).classed("selected"));
-        dragit.trajectory.display(d, i, "selected");
+            dragit.trajectory.display(d, i, "selected")
+            dot.style("opacity", .2)
+            d3.select(this).style("opacity", 1)
+            d3.selectAll(".selected").style("opacity", 1)
+            dot_select = true;
+      } else {
+        d3.select(this).classed("selected", !d3.select(this).classed("selected"));
+            dot.classed("selected", false);
+        dragit.trajectory.removeAll("selected");
+            dot_select = false;
+      }
         //TODO: test if has been dragged
         // Look at the state machine history and find a drag event in it?
       })
@@ -256,7 +454,7 @@ d3.json("data_for_first_graph.json", function(nations) {
           dragit.trajectory.display(d, i)
           dragit.utils.animateTrajectory(dragit.trajectory.display(d, i), dragit.time.current, 1000)
           countrylabel.text(d.name);
-          dot.style("opacity", .4)
+          dot.style("opacity", .2)
           d3.select(this).style("opacity", 1)
           d3.selectAll(".selected").style("opacity", 1)
         }
@@ -265,6 +463,10 @@ d3.json("data_for_first_graph.json", function(nations) {
         if(dragit.statemachine.current_state == "idle") {
           countrylabel.text("");
           dot.style("opacity", 1);
+        }
+        if (dot_select){
+            dot.style("opacity", .2)
+            d3.selectAll(".selected").style("opacity", 1)
         }
   
         dragit.trajectory.remove(d, i);
@@ -337,6 +539,7 @@ d3.json("data_for_first_graph.json", function(nations) {
     dragit.init(".gRoot");
     dragit.time = {min:1, max:12, step:1, current:1}
     dragit.data = d3.range(nations.length).map(function() { return Array(); })
+
     for(var yy = 0; yy<12; yy++) {
       interpolateData(yy+2002).filter(function(d, i) { 
         dragit.data[i][yy] = [xScale(x(d)), yScale(y(d))];
@@ -358,6 +561,7 @@ d3.json("data_for_first_graph.json", function(nations) {
       dot.style("opacity", 1)
     }
     dragit.evt.register("dragend", end_effect)
+
   }
 function clear_demo() {
   if(first_time) {
