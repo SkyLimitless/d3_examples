@@ -74,13 +74,44 @@ path.lineTrajectory {
 }
 </style>
 
-<h1>Statistics of all players over period of time</h1>
+<h1 align="center">Statistics of all players who played for more than 9 years</h1>
 
-<i>Use your mouse to click and drag players (represented as circles) to explore 11 years of career stats</i><br>
-<i id="hint2" >To cancel demo click on any player (represented as circle) or on slider</i><br>
-<i>Hover your mouse on player to see its progress</i><br>
-<i id="hint4" >For comparing different players just double click on all players</i><br>
-<br>
+<i id="hint2" >To cancel demo click on any player (represented as circle), continents or on slider</i><br>
+<b>Operations - </b><br>
+<table>
+    <tr>
+        <td>
+            <i><b>CLICK And DRAG</b></i>
+        </td>
+        <td>
+            <i> players (represented as circles) to explore 11 years of career stats</i>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <i><b>HOVER</b></i>
+        </td>
+        <td>
+            </i> your mouse on player to see its progress</i>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b><i>SINGLE CLICK ON PLAYERS</i></b>
+        </td>
+        <td>
+            <i>For individual, comparing different players performance and for toggle effect</i>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b><i>SINGLE CLICK ON CONTINENTS &nbsp; &nbsp;</i></b>
+        </td>
+        <td>
+            <i>For comparing different players performance of same continent</i>
+        </td>
+    </tr>
+</table>
 
 <!--need to change below code according to data-->
 <div id="chart" style="margin:0px"></div>
@@ -89,6 +120,9 @@ path.lineTrajectory {
 <input type="range" name="points" min="1" max="11" step="1" value="1" id="slider-time" style="width:1200px">
 <span id="max-time">2013</span>
 <br>
+<p>
+    References - http://romsson.github.io/dragit/ by Rommson
+</p>
 <!--<p>
 Original creation by <a href="http://www.gapminder.org/world/">Gapminder</a> using <a href="https://github.com/RandomEtc/mind-gapper-js">Tom Carden</a> JavaScript version.<br>
 Recreation by <a href="http://bost.ocks.org/mike/nations/">Mike Bostock</a> with <a href="http://d3js.org/">D3.js</a>.<br>
@@ -203,6 +237,14 @@ svg.append("text")
     .attr("x", width - 220)
     .text("Circle Size - Total Matches Played");
 
+svg.append("text")
+        .style("font-size","15px")
+        .attr("text-anchor", "start")
+        .attr("y", 193)
+        .attr("x", width - 220)
+        .text("Trajectory - player's performance");
+
+
 var first_time = true;
 var dot_select = false;
 var continent_select = false;
@@ -218,6 +260,7 @@ d3.json("data_for_first_graph.json", function(nations) {
                 .on("mouseup", function () {
                     if (!continent_select) {
                         continent_select = true;
+                        d3.selectAll(".selected").classed("selected", false);
                         d3.selectAll(".Europe").classed("selected", true);
                         dot.style("opacity", .2)
                         d3.selectAll(".selected").style("opacity", 1)
@@ -241,7 +284,7 @@ d3.json("data_for_first_graph.json", function(nations) {
                         countrylabel.text("");
                         dot.style("opacity", 1);
                     }
-                    if (dot_select || continent_select) {
+                    if (continent_select) {
                         dot.style("opacity", .2)
                         d3.selectAll(".selected").style("opacity", 1)
                     }
