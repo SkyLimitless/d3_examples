@@ -99,7 +99,7 @@ Re-Recreation using <a href="http://romsson.github.io/dragit/">dragit.js</a> by 
 function x(d) { return d.average; }
 function y(d) { return d.percent; }
 function radius(d) { return d.total; }
-function color(d) { return d.region; }
+function color(d) { return d.name; }
 function key(d) { return d.name; }
 
 // Chart dimensions.
@@ -110,7 +110,8 @@ var margin = {top: 19.5, right: 19.5, bottom: 19.5, left: 39.5},
 var xScale = d3.scale.linear().domain([0, 50]).range([0, width]), //total points difference goes here
     yScale = d3.scale.linear().domain([-10, 100]).range([height, 25]),
     radiusScale = d3.scale.sqrt().domain([0, 7]).range([0, 40]),
-    colorScale = d3.scale.category10();
+    colorScale = d3.scale.category20b();
+    colorScale1 = d3.scale.category10();
 
 // The x & y axes.
 var xAxis = d3.svg.axis().orient("bottom").scale(xScale).ticks(12),
@@ -166,7 +167,7 @@ var europe = svg.append("g").append("circle")
                 .attr("cx", width)
                 .attr("cy", 0)
                 .attr("r", 20)
-                .style("fill", colorScale("Europe"))
+                .style("fill", colorScale1("Europe"))
                 .append("title").text("Europe");
 
   svg.append("text")
@@ -180,7 +181,7 @@ var asia = svg.append("g").append("circle")
                 .attr("cx", width)
                 .attr("cy", 84)
                 .attr("r", 20)
-                .style("fill", colorScale("Asia"))
+                .style("fill", colorScale1("Asia"))
                 .append("title").text("Asia");
 
   svg.append("text")
@@ -195,7 +196,7 @@ var america = svg.append("g").append("circle")
                 .attr("cx", width)
                 .attr("cy", 42)
                 .attr("r", 20)
-                .style("fill", colorScale("America"))
+                .style("fill", colorScale1("America"))
                 .append("title").text("America");
 
   svg.append("text")
@@ -210,7 +211,7 @@ var australia = svg.append("g").append("circle")
                 .attr("cx", width)
                 .attr("cy", 126)
                 .attr("r", 20)
-                .style("fill", colorScale("Australia"))
+                .style("fill", colorScale1("Australia"))
                 .append("title").text("Australia");
 
   svg.append("text")
@@ -244,9 +245,13 @@ d3.json("data_for_first_graph.json", function(nations) {
       .on("mousedow", function(d, i) {
       })
       .on("mouseup", function(d, i) {
+        if(!d3.select(this).classed("selected")) {
         dot.classed("selected", false);
         d3.select(this).classed("selected", !d3.select(this).classed("selected"));
-        dragit.trajectory.display(d, i, "selected");
+      } else {
+        d3.select(this).classed("selected", !d3.select(this).classed("selected"));
+        dragit.trajectory.remove(d, i);
+      }
         //TODO: test if has been dragged
         // Look at the state machine history and find a drag event in it?
       })
@@ -256,7 +261,7 @@ d3.json("data_for_first_graph.json", function(nations) {
           dragit.trajectory.display(d, i)
           dragit.utils.animateTrajectory(dragit.trajectory.display(d, i), dragit.time.current, 1000)
           countrylabel.text(d.name);
-          dot.style("opacity", .4)
+          dot.style("opacity", .05)
           d3.select(this).style("opacity", 1)
           d3.selectAll(".selected").style("opacity", 1)
         }
